@@ -1,0 +1,12 @@
+1. Lựa chọn giấy phép:
+Đối với nền tảng thương mại điện tử có định hướng bán bản doanh nghiệp (Enterprise), giải pháp tối ưu nhất là áp dụng mô hình Dual-Licensing (Giấy phép kép). Cụ thể, phiên bản mã nguồn mở dành cho cộng đồng sẽ sử dụng Giấy phép GNU AGPLv3 (Affero General Public License), đồng thời nhà phát triển cung cấp Giấy phép Thương mại (Commercial License) dành riêng cho các khách hàng doanh nghiệp.
+
+2. Lập luận và phân tích:
+Thúc đẩy sự lan tỏa và bảo vệ mã nguồn mở với AGPLv3:
+- Phiên bản miễn phí được phát hành dưới giấy phép AGPLv3. Đây là giấy phép Copyleft mạnh mẽ, mở rộng quy định của GPL đối với các ứng dụng chạy trên môi trường điện toán đám mây hay máy chủ (SaaS). Theo quy định của AGPLv3, bất kỳ tổ chức hay cá nhân nào chỉnh sửa, nâng cấp hệ thống và vận hành trên máy chủ cho người dùng truy cập đều bắt buộc phải công khai toàn bộ mã nguồn cải tiến đó cho cộng đồng. Điều này giúp ngăn chặn các đối thủ cạnh tranh lấy mã nguồn mở của nền tảng làm sản phẩm thương mại độc quyền mà không đóng góp lại.
+- Tạo động lực kinh doanh cho phiên bản Doanh nghiệp (Commercial License):
+- Rất nhiều doanh nghiệp lớn muốn tùy biến nền tảng để tích hợp vào hệ thống nội bộ, thêm các tính năng độc quyền hoặc không muốn chia sẻ mã nguồn kinh doanh bảo mật của họ ra bên ngoài. Giấy phép AGPLv3 sẽ "buộc" các doanh nghiệp này chọn mua Giấy phép Thương mại. Khi mua bản Doanh nghiệp, họ sẽ được miễn trừ điều khoản phải công khai mã nguồn của AGPLv3, đồng thời nhận được sự hỗ trợ kỹ thuật chuyên sâu (SLA), các tính năng nâng cao (bảo mật, hiệu năng, phân quyền phức tạp) và quyền cập nhật ưu tiên từ nhà phát triển.
+- Tạo dựng mô hình kinh doanh bền vững:
+Mô hình giấy phép kép này đã được chứng minh thành công bởi nhiều nền tảng lớn như Odoo, Magento hay MongoDB trước đây. Nó vừa giúp dự án thu hút cộng đồng lập trình viên đông đảo để phát triển sản phẩm, vừa mang lại nguồn doanh thu ổn định từ các khách hàng trả phí để tái đầu tư vào nghiên cứu và hoàn thiện phần mềm.
+
+Việc kết hợp AGPLv3 cho bản cộng đồng và Commercial License cho bản doanh nghiệp là sự lựa chọn cân bằng nhất, đảm bảo tính mở của sản phẩm mà vẫn tạo tiền đề tài chính vững chắc cho sự phát triển lâu dài của doanh nghiệp.
