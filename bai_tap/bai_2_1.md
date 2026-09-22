@@ -1,12 +1,28 @@
-1. Lựa chọn giấy phép:
-Đối với nền tảng thương mại điện tử có định hướng bán bản doanh nghiệp (Enterprise), giải pháp tối ưu nhất là áp dụng mô hình Dual-Licensing (Giấy phép kép). Cụ thể, phiên bản mã nguồn mở dành cho cộng đồng sẽ sử dụng Giấy phép GNU AGPLv3 (Affero General Public License), đồng thời nhà phát triển cung cấp Giấy phép Thương mại (Commercial License) dành riêng cho các khách hàng doanh nghiệp.
+# BÀI 2.1: LỰA CHỌN GIẤY PHÉP PHẦN MỀM CHO DỰ ÁN
 
-2. Lập luận và phân tích:
-Thúc đẩy sự lan tỏa và bảo vệ mã nguồn mở với AGPLv3:
-- Phiên bản miễn phí được phát hành dưới giấy phép AGPLv3. Đây là giấy phép Copyleft mạnh mẽ, mở rộng quy định của GPL đối với các ứng dụng chạy trên môi trường điện toán đám mây hay máy chủ (SaaS). Theo quy định của AGPLv3, bất kỳ tổ chức hay cá nhân nào chỉnh sửa, nâng cấp hệ thống và vận hành trên máy chủ cho người dùng truy cập đều bắt buộc phải công khai toàn bộ mã nguồn cải tiến đó cho cộng đồng. Điều này giúp ngăn chặn các đối thủ cạnh tranh lấy mã nguồn mở của nền tảng làm sản phẩm thương mại độc quyền mà không đóng góp lại.
-- Tạo động lực kinh doanh cho phiên bản Doanh nghiệp (Commercial License):
-- Rất nhiều doanh nghiệp lớn muốn tùy biến nền tảng để tích hợp vào hệ thống nội bộ, thêm các tính năng độc quyền hoặc không muốn chia sẻ mã nguồn kinh doanh bảo mật của họ ra bên ngoài. Giấy phép AGPLv3 sẽ "buộc" các doanh nghiệp này chọn mua Giấy phép Thương mại. Khi mua bản Doanh nghiệp, họ sẽ được miễn trừ điều khoản phải công khai mã nguồn của AGPLv3, đồng thời nhận được sự hỗ trợ kỹ thuật chuyên sâu (SLA), các tính năng nâng cao (bảo mật, hiệu năng, phân quyền phức tạp) và quyền cập nhật ưu tiên từ nhà phát triển.
-- Tạo dựng mô hình kinh doanh bền vững:
-Mô hình giấy phép kép này đã được chứng minh thành công bởi nhiều nền tảng lớn như Odoo, Magento hay MongoDB trước đây. Nó vừa giúp dự án thu hút cộng đồng lập trình viên đông đảo để phát triển sản phẩm, vừa mang lại nguồn doanh thu ổn định từ các khách hàng trả phí để tái đầu tư vào nghiên cứu và hoàn thiện phần mềm.
+**Dự án lựa chọn:** Nền tảng thương mại điện tử có bán bản doanh nghiệp.
 
-Việc kết hợp AGPLv3 cho bản cộng đồng và Commercial License cho bản doanh nghiệp là sự lựa chọn cân bằng nhất, đảm bảo tính mở của sản phẩm mà vẫn tạo tiền đề tài chính vững chắc cho sự phát triển lâu dài của doanh nghiệp.
+---
+
+## 1. Xác định giấy phép phù hợp
+Đối với nền tảng thương mại điện tử có định hướng bán phiên bản Doanh nghiệp (Enterprise), giải pháp tối ưu nhất là áp dụng mô hình **Dual-Licensing (Giấy phép kép)**:
+* **Phiên bản Cộng đồng (Community Edition):** Phát hành dưới giấy phép **GNU AGPLv3 (Affero General Public License version 3)**.
+* **Phiên bản Doanh nghiệp (Enterprise Edition):** Phát hành dưới **Giấy phép Thương mại (Commercial License)** do chính nhà phát triển sở hữu.
+
+## 2. Bài lập luận 
+
+### Đặt vấn đề
+Một nền tảng thương mại điện tử khi phát triển cần cân bằng hai mục tiêu: vừa tận dụng sức mạnh cộng đồng để nhanh chóng mở rộng thị phần, vừa đảm bảo mô hình tài chính bền vững thông qua việc bán các bản trả phí cho doanh nghiệp lớn. 
+
+### Phân tích
+
+#### a. Ràng buộc bảo vệ mã nguồn mở với AGPLv3
+Khác với các giấy phép rành buộc yếu hay GPL thông thường, **AGPLv3** mở rộng điều khoản Copyleft áp dụng cho cả các mô hình triển khai trên điện toán đám mây hay máy chủ (SaaS). Bất kỳ cá nhân hay tổ chức nào chỉnh sửa, nâng cấp nền tảng và vận hành trên máy chủ cho người dùng cuối truy cập đều **bắt buộc phải công khai toàn bộ mã nguồn cải tiến** cho cộng đồng. Điều này giúp ngăn chặn các đối thủ lấy miễn phí mã nguồn mở để kinh doanh dịch vụ đóng độc quyền mà không đóng góp lại cho dự án.
+
+#### b. Động lực thúc đẩy thương mại với Commercial License
+Các doanh nghiệp lớn khi triển khai thương mại điện tử luôn có nhu cầu bảo mật quy trình kinh doanh, tích hợp hệ thống nội bộ độc quyền (ERP, CRM) và yêu cầu cam kết chất lượng dịch vụ (SLA) kèm hỗ trợ kỹ thuật chuyên sâu. Điều khoản buộc mở mã nguồn của AGPLv3 sẽ khiến nhóm khách hàng này không thể dùng bản miễn phí. Do đó, họ sẽ sẵn sàng chi trả để **mua Giấy phép Thương mại (Commercial License)** nhằm được miễn trừ nghĩa vụ công khai mã nguồn và nhận được các quyền lợi ưu tiên.
+
+#### c. Hiệu quả thực tiễn
+Mô hình Dual-Licensing đã chứng minh tính hiệu quả vượt trội ở nhiều dự án mã nguồn mở thành công trên thế giới như Odoo, Magento hay MongoDB. Mô hình này vừa duy trì được lực lượng đóng góp đông đảo từ cộng đồng lập trình viên, vừa tạo ra nguồn doanh thu thương mại ổn định để tái đầu tư phát triển sản phẩm.
+
+Chiến lược **Dual-Licensing (AGPLv3 kết hợp Commercial License)** là sự lựa chọn hài hòa nhất, giúp bảo vệ tính mở của sản phẩm cộng đồng, đồng thời tạo tiền đề tài chính vững chắc cho sự phát triển lâu dài của dự án.
