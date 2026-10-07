@@ -6,7 +6,7 @@ import io
 app = Flask(__name__)
 app.config['JSON_AS_ASCII'] = False  # JSON hiển thị tiếng Việt có dấu
 
-# Dữ liệu mẫu
+# Dữ liệu mẫu (sao chép đúng từ đề bài)
 STUDENTS = {
     "23T1020001": {"name": "Nguyễn Văn An", "lop": "K47A", "scores": {"PMMNM": 8.5, "CSDL": 7.0, "MMT": 9.0}},
     "23T1020002": {"name": "Trần Thị Bình", "lop": "K47A", "scores": {"PMMNM": 6.0, "CSDL": 5.5, "MMT": 7.0}},
@@ -52,200 +52,26 @@ def student_summary(mssv):
         "rank": rank(avg)
     }
 
-def get_rank_badge(rank_str):
-    """Tạo badge màu sắc tùy theo xếp loại."""
-    colors = {
-        "Giỏi": "#10b981; background: #ecfdf5",
-        "Khá": "#3b82f6; background: #eff6ff",
-        "Trung bình": "#f59e0b; background: #fffbeb",
-        "Yếu": "#ef4444; background: #fef2f2",
-        "Chưa có điểm": "#6b7280; background: #f3f4f6"
-    }
-    style = colors.get(rank_str, "#6b7280; background: #f3f4f6")
-    return f'<span style="padding: 4px 10px; border-radius: 9999px; font-weight: 600; font-size: 0.85rem; color: {style};">{escape(rank_str)}</span>'
-
 def layout(title, body):
-    """Khung HTML dùng chung với CSS styling hiện đại."""
+    """Khung HTML dùng chung cho giao diện web."""
     title_escaped = escape(title)
     return f"""<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{title_escaped} - Quản lý Sổ Điểm</title>
-    <style>
-        * {{ box-sizing: border-box; margin: 0; padding: 0; }}
-        body {{
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: #f8fafc;
-            color: #334155;
-            line-height: 1.6;
-            padding-bottom: 40px;
-        }}
-        header {{
-            background-color: #ffffff;
-            border-bottom: 1px solid #e2e8f0;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-        }}
-        .nav-container {{
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 16px 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }}
-        .brand {{
-            font-size: 1.25rem;
-            font-weight: 700;
-            color: #2563eb;
-            text-decoration: none;
-        }}
-        nav a {{
-            color: #64748b;
-            text-decoration: none;
-            margin-left: 20px;
-            font-weight: 500;
-            transition: color 0.2s;
-        }}
-        nav a:hover {{ color: #2563eb; }}
-        main {{
-            max-width: 1000px;
-            margin: 30px auto;
-            padding: 0 20px;
-        }}
-        .card {{
-            background: #ffffff;
-            border-radius: 12px;
-            padding: 28px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-            border: 1px solid #f1f5f9;
-        }}
-        h1, h2, h3 {{ color: #0f172a; margin-bottom: 16px; font-weight: 700; }}
-        h1 {{ font-size: 1.75rem; }}
-        h2 {{ font-size: 1.4rem; }}
-        p {{ margin-bottom: 12px; color: #475569; }}
-        
-        /* Table Styles */
-        table {{
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 16px;
-            font-size: 0.95rem;
-        }}
-        th, td {{
-            padding: 12px 16px;
-            text-align: left;
-            border-bottom: 1px solid #e2e8f0;
-        }}
-        th {{
-            background-color: #f1f5f9;
-            color: #475569;
-            font-weight: 600;
-        }}
-        tr:hover {{ background-color: #f8fafc; }}
-        td a {{ color: #2563eb; font-weight: 600; text-decoration: none; }}
-        td a:hover {{ text-decoration: underline; }}
-
-        /* Filter & Buttons */
-        .filter-bar {{
-            display: flex;
-            gap: 8px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }}
-        .filter-btn {{
-            padding: 6px 14px;
-            border-radius: 6px;
-            background: #e2e8f0;
-            color: #334155;
-            text-decoration: none;
-            font-size: 0.9rem;
-            font-weight: 500;
-            transition: all 0.2s;
-        }}
-        .filter-btn:hover {{
-            background: #2563eb;
-            color: white;
-        }}
-        
-        /* Forms & Inputs */
-        .search-box {{
-            display: flex;
-            gap: 10px;
-            margin-bottom: 24px;
-        }}
-        input[type="text"] {{
-            flex: 1;
-            padding: 10px 14px;
-            border: 1px solid #cbd5e1;
-            border-radius: 8px;
-            font-size: 0.95rem;
-            outline: none;
-            transition: border-color 0.2s;
-        }}
-        input[type="text"]:focus {{ border-color: #2563eb; }}
-        button, .btn {{
-            display: inline-block;
-            padding: 10px 18px;
-            background-color: #2563eb;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-weight: 500;
-            cursor: pointer;
-            text-decoration: none;
-            transition: background-color 0.2s;
-        }}
-        button:hover, .btn:hover {{ background-color: #1d4ed8; }}
-        .btn-outline {{
-            background-color: transparent;
-            color: #2563eb;
-            border: 1px solid #2563eb;
-        }}
-        .btn-outline:hover {{
-            background-color: #eff6ff;
-        }}
-        
-        /* Stat Cards */
-        .stats-grid {{
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 16px;
-            margin-bottom: 24px;
-        }}
-        .stat-card {{
-            background: #f8fafc;
-            padding: 16px;
-            border-radius: 8px;
-            border: 1px solid #e2e8f0;
-        }}
-        .stat-value {{
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: #2563eb;
-        }}
-        .stat-label {{
-            font-size: 0.875rem;
-            color: #64748b;
-        }}
-    </style>
+    <title>{title_escaped} - Sổ điểm</title>
 </head>
 <body>
     <header>
-        <div class="nav-container">
-            <a href="{url_for('index')}" class="brand">🎓 Sổ Điểm Điện Tử</a>
-            <nav>
-                <a href="{url_for('index')}">Trang chủ</a>
-                <a href="{url_for('student_list')}">Danh sách sinh viên</a>
-                <a href="{url_for('search_student')}">Tìm kiếm</a>
-            </nav>
-        </div>
+        <nav>
+            <a href="{url_for('index')}">Trang chủ</a> | 
+            <a href="{url_for('student_list')}">Sinh viên</a> | 
+            <a href="{url_for('search_student')}">Tìm kiếm sinh viên</a>
+        </nav>
     </header>
+    <hr>
     <main>
-        <div class="card">
-            {body}
-        </div>
+        {body}
     </main>
 </body>
 </html>"""
@@ -260,24 +86,13 @@ def index():
     total_classes = len(lops)
     
     body = f"""
-    <h1>Trang Chủ Sổ Điểm</h1>
-    <p>Hệ thống quản lý thông tin điểm thi và học phần của sinh viên.</p>
-    
-    <div class="stats-grid" style="margin-top: 20px;">
-        <div class="stat-card">
-            <div class="stat-value">{total_students}</div>
-            <div class="stat-label">Tổng sinh viên</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-value">{total_classes}</div>
-            <div class="stat-label">Lớp học ({", ".join(lops)})</div>
-        </div>
-    </div>
-
-    <div style="margin-top: 24px; display: flex; gap: 12px;">
-        <a href="{url_for('student_list')}" class="btn">Xem danh sách sinh viên</a>
-        <a href="{url_for('api_students')}" class="btn btn-outline" target="_blank">Khám phá API JSON</a>
-    </div>
+    <h1>Trang chủ Sổ điểm</h1>
+    <p>Tổng số sinh viên: <strong>{total_students}</strong></p>
+    <p>Số lớp: <strong>{total_classes}</strong> ({", ".join(lops)})</p>
+    <ul>
+        <li><a href="{url_for('student_list')}">Xem danh sách sinh viên (Web)</a></li>
+        <li><a href="{url_for('api_students')}">Xem danh sách sinh viên (API JSON)</a></li>
+    </ul>
     """
     return layout("Trang chủ", body)
 
@@ -285,20 +100,25 @@ def index():
 @app.route("/students")
 def student_list():
     lop_filter = request.args.get("lop", "").strip()
+    
+    # Lấy danh sách tất cả các lớp để làm thanh lọc
     all_lops = sorted(list(set(st["lop"] for st in STUDENTS.values())))
     
-    nav_links = [f'<a href="{url_for("student_list")}" class="filter-btn">Tất cả</a>']
+    # Thanh lọc Tất cả | K47A | K47B ...
+    nav_links = [f'<a href="{url_for("student_list")}">Tất cả</a>']
     for l in all_lops:
-        nav_links.append(f'<a href="{url_for("student_list", lop=l)}" class="filter-btn">{escape(l)}</a>')
-    filter_bar = "".join(nav_links)
+        nav_links.append(f'<a href="{url_for("student_list", lop=l)}">{escape(l)}</a>')
+    filter_bar = " | ".join(nav_links)
     
+    # Lọc danh sách sinh viên
     filtered = []
     for mssv, st in STUDENTS.items():
         if not lop_filter or st["lop"].lower() == lop_filter.lower():
-            filtered.append(student_summary(mssv))
+            summary = student_summary(mssv)
+            filtered.append(summary)
             
     if not filtered:
-        table_html = "<p style='margin-top: 20px;'>Không tìm thấy sinh viên phù hợp.</p>"
+        table_html = "<p>Không có sinh viên phù hợp.</p>"
     else:
         rows = []
         for s in filtered:
@@ -307,21 +127,21 @@ def student_list():
             rows.append(f"""
             <tr>
                 <td><a href="{detail_url}">{escape(s['mssv'])}</a></td>
-                <td><strong>{escape(s['name'])}</strong></td>
+                <td>{escape(s['name'])}</td>
                 <td>{escape(s['lop'])}</td>
-                <td><strong>{avg_str}</strong></td>
-                <td>{get_rank_badge(s['rank'])}</td>
+                <td>{avg_str}</td>
+                <td>{escape(s['rank'])}</td>
             </tr>
             """)
         table_html = f"""
-        <table>
+        <table border="1" cellpadding="5" cellspacing="0">
             <thead>
                 <tr>
                     <th>MSSV</th>
-                    <th>Họ và Tên</th>
+                    <th>Họ tên</th>
                     <th>Lớp</th>
                     <th>Điểm TB</th>
-                    <th>Xếp Loại</th>
+                    <th>Xếp loại</th>
                 </tr>
             </thead>
             <tbody>
@@ -331,9 +151,8 @@ def student_list():
         """
         
     body = f"""
-    <h2>Danh Sách Sinh Viên</h2>
-    <p>Lọc danh sách theo lớp:</p>
-    <div class="filter-bar">{filter_bar}</div>
+    2Danh sách sinh viên</h2>
+    <p>Lọc lớp: {filter_bar}</p>
     {table_html}
     """
     return layout("Danh sách sinh viên", body)
@@ -351,48 +170,27 @@ def student_detail(mssv):
     
     scores_rows = []
     for hp, diem in s["scores"].items():
-        scores_rows.append(f"<tr><td>{escape(hp)}</td><td><strong>{diem}</strong></td></tr>")
+        scores_rows.append(f"<tr><td>{escape(hp)}</td><td>{diem}</td></tr>")
         
     scores_table = f"""
-    <table>
-        <thead><tr><th>Học phần</th><th>Điểm số</th></tr></thead>
-        <tbody>{''.join(scores_rows) if scores_rows else '<tr><td colspan="2">Chưa có điểm học phần nào.</td></tr>'}</tbody>
+    <table border="1" cellpadding="5" cellspacing="0">
+        <thead><tr><th>Học phần</th><th>Điểm</th></tr></thead>
+        <tbody>{''.join(scores_rows) if scores_rows else '<tr><td colspan="2">Chưa có điểm học phần nào</td></tr>'}</tbody>
     </table>
     """
     
     avg_str = f"{s['average']:.2f}" if s['average'] is not None else "Chưa có điểm"
     
     body = f"""
-    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px;">
-        <div>
-            <h2>{escape(s['name'])}</h2>
-            <p>Mã sinh viên: <strong>{escape(s['mssv'])}</strong> | Lớp: <a href="{lop_url}"><strong>{escape(s['lop'])}</strong></a></p>
-        </div>
-        <div>
-            {get_rank_badge(s['rank'])}
-        </div>
-    </div>
-    
-    <div class="stats-grid">
-        <div class="stat-card">
-            <div class="stat-value">{avg_str}</div>
-            <div class="stat-label">Điểm trung bình</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-value">{len(s['scores'])}</div>
-            <div class="stat-label">Số môn đã có điểm</div>
-        </div>
-    </div>
-
-    <h3 style="margin-top: 24px;">Bảng Điểm Chi Tiết</h3>
+    <h2>Chi tiết sinh viên: {escape(s['name'])}</h2>
+    <p><strong>MSSV:</strong> {escape(s['mssv'])}</p>
+    <p><strong>Lớp:</strong> <a href="{lop_url}">{escape(s['lop'])}</a></p>
+    <p><strong>Điểm TB:</strong> {avg_str}</p>
+    <p><strong>Xếp loại:</strong> {escape(s['rank'])}</p>
+    <p><strong>Link rút gọn:</strong> <a href="{short_url}">{request.host_url[:-1]}{short_url}</a></p>
+    <p><a href="{export_url}">Tải bảng điểm (CSV)</a></p>
+    <h3>Bảng điểm chi tiết</h3>
     {scores_table}
-
-    <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid #e2e8f0; display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
-        <a href="{export_url}" class="btn">📥 Tải bảng điểm (CSV)</a>
-        <span style="font-size: 0.9rem; color: #64748b;">
-            Link rút gọn: <a href="{short_url}" target="_blank">{request.host_url[:-1]}{short_url}</a>
-        </span>
-    </div>
     """
     return layout(f"Sinh viên {s['name']}", body)
 
@@ -423,7 +221,7 @@ def export_csv(mssv):
 @app.route("/search")
 def search_student():
     q = request.args.get("q", "").strip()
-    q_escaped = escape(q)
+    q_escaped = escape(q)  # Escape an toàn cho thuộc tính value và hiển thị
     
     results = []
     if q:
@@ -433,49 +231,22 @@ def search_student():
                 results.append(student_summary(mssv))
                 
     if q:
-        result_header = f"<p style='margin-bottom: 12px;'>Tìm thấy <strong>{len(results)}</strong> kết quả cho từ khóa “<strong>{q_escaped}</strong>”:</p>"
+        result_header = f"<h3>Tìm thấy {len(results)} kết quả cho “{q_escaped}”</h3>"
     else:
         result_header = ""
         
-    rows = []
+    items = []
     for s in results:
-        avg_str = f"{s['average']:.2f}" if s['average'] is not None else "-"
-        detail_url = url_for("student_detail", mssv=s["mssv"])
-        rows.append(f"""
-        <tr>
-            <td><a href="{detail_url}">{escape(s['mssv'])}</a></td>
-            <td><strong>{escape(s['name'])}</strong></td>
-            <td>{escape(s['lop'])}</td>
-            <td>{avg_str}</td>
-            <td>{get_rank_badge(s['rank'])}</td>
-        </tr>
-        """)
-        
-    table_html = f"""
-    <table>
-        <thead>
-            <tr>
-                <th>MSSV</th>
-                <th>Họ và Tên</th>
-                <th>Lớp</th>
-                <th>Điểm TB</th>
-                <th>Xếp Loại</th>
-            </tr>
-        </thead>
-        <tbody>
-            {''.join(rows)}
-        </tbody>
-    </table>
-    """ if rows else ""
+        items.append(f'<li><a href="{url_for("student_detail", mssv=s["mssv"])}">{escape(s["mssv"])} - {escape(s["name"])}</a> ({escape(s["lop"])})</li>')
         
     body = f"""
-    <h2>Tìm Kiếm Sinh Viên</h2>
-    <form action="{url_for('search_student')}" method="GET" class="search-box">
-        <input type="text" name="q" value="{q_escaped}" placeholder="Nhập tên hoặc mã sinh viên cần tìm...">
+    <h2>Tìm kiếm sinh viên</h2>
+    <form action="{url_for('search_student')}" method="GET">
+        <input type="text" name="q" value="{q_escaped}" placeholder="Nhập tên hoặc MSSV...">
         <button type="submit">Tìm kiếm</button>
     </form>
     {result_header}
-    {table_html}
+    <ul>{''.join(items)}</ul>
     """
     return layout("Tìm kiếm", body)
 
@@ -492,15 +263,18 @@ def api_students():
         try:
             min_avg = float(min_avg_raw)
         except ValueError:
+            # Tham số sai kiểu -> Trả về lỗi 400
             abort(400, description="Tham số min_avg phải là một số thực hợp lệ.")
             
     res = []
     for mssv in STUDENTS:
         s = student_summary(mssv)
         
+        # Lọc theo lớp
         if lop_filter and s["lop"].lower() != lop_filter.lower():
             continue
             
+        # Lọc theo min_avg (bỏ qua sinh viên chưa có điểm)
         if min_avg is not None:
             if s["average"] is None or s["average"] < min_avg:
                 continue
@@ -525,7 +299,7 @@ def api_student_course_score(mssv, course):
         abort(404, description=f"Không tìm thấy sinh viên với MSSV = {mssv}.")
         
     st = STUDENTS[mssv]
-    course_upper = course.upper()
+    course_upper = course.upper()  # Luôn lưu & xử lý dạng chữ hoa
     
     if request.method == "GET":
         if course_upper not in st["scores"]:
@@ -550,7 +324,7 @@ def api_student_course_score(mssv, course):
             abort(400, description="Điểm phải nằm trong khoảng [0, 10].")
             
         is_new = course_upper not in st["scores"]
-        st["scores"][course_upper] = score_val
+        st["scores"][course_upper] = score_val  # Cập nhật điểm
         
         avg = average(st["scores"])
         resp_data = {
@@ -561,10 +335,12 @@ def api_student_course_score(mssv, course):
         }
         
         if is_new:
+            # Thêm mới: trả mã 201 + Location header
             resp = make_response(jsonify(resp_data), 201)
             resp.headers["Location"] = url_for("api_student_course_score", mssv=mssv, course=course_upper)
             return resp
         else:
+            # Sửa điểm: trả mã 200
             return jsonify(resp_data), 200
             
     elif request.method == "DELETE":
@@ -572,7 +348,7 @@ def api_student_course_score(mssv, course):
             abort(404, description=f"Không thể xoá. Học phần {course_upper} chưa có điểm.")
             
         del st["scores"][course_upper]
-        return "", 204
+        return "", 204  # Trả về 204 No Content
 
 # ----------------- PHẦN 3: XỬ LÝ LỖI -----------------
 
@@ -585,25 +361,24 @@ def handle_error(error):
     
     titles = {
         400: "Dữ liệu không hợp lệ",
-        404: "Không tìm thấy nội dung",
+        404: "Không tìm thấy",
         405: "Phương thức không được hỗ trợ"
     }
     title = titles.get(status_code, "Lỗi hệ thống")
     description = getattr(error, 'description', str(error))
     
+    # Nếu đường dẫn bắt đầu bằng /api/ -> Trả về JSON
     if request.path.startswith("/api/"):
         return jsonify({
             "error": title,
             "detail": description
         }), status_code
     
+    # URL khác -> Trả về giao diện HTML sử dụng layout()
     body = f"""
-    <div style="text-align: center; padding: 20px 0;">
-        <h1 style="font-size: 3rem; color: #ef4444;">{status_code}</h1>
-        <h2>{escape(title)}</h2>
-        <p style="margin-bottom: 20px;">{escape(description)}</p>
-        <a href="{url_for('index')}" class="btn">Quay lại Trang chủ</a>
-    </div>
+    <h2>Lỗi {status_code}: {escape(title)}</h2>
+    <p>{escape(description)}</p>
+    <p><a href="{url_for('index')}">Quay lại Trang chủ</a></p>
     """
     return layout(f"Lỗi {status_code}", body), status_code
 
