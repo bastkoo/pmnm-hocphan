@@ -1,7 +1,5 @@
 # BÁO CÁO KIỂM THỬ VÀ TRẢ LỜI CÂU HỎI - BÀI TẬP TỔNG HỢP CHƯƠNG 3
-
 ## 1. Kết quả chạy lệnh `flask --app sodiem routes`
-
 ```text
 Endpoint                  Methods  Rule
 ------------------------  -------  -----------------------------------------
