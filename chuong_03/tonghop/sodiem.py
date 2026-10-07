@@ -90,7 +90,7 @@ def index():
     <p>Tổng số sinh viên: <strong>{total_students}</strong></p>
     <p>Số lớp: <strong>{total_classes}</strong> ({", ".join(lops)})</p>
     <ul>
-        <li><a href="{url_for('student_list')}">Xem danh sách sinh viên (Web)</a></li>
+        <li><a href="{url_for('student_list')}">Xem danh sách sinh viên (bản Web)</a></li>
         <li><a href="{url_for('api_students')}">Xem danh sách sinh viên (API JSON)</a></li>
     </ul>
     """
