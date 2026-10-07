@@ -4,9 +4,9 @@ import csv
 import io
 
 app = Flask(__name__)
-app.config['JSON_AS_ASCII'] = False  # JSON hiển thị tiếng Việt có dấu[cite: 3, 5]
+app.config['JSON_AS_ASCII'] = False  # JSON hiển thị tiếng Việt có dấu
 
-# Dữ liệu mẫu (sao chép đúng từ đề bài)[cite: 5]
+# Dữ liệu mẫu (sao chép đúng từ đề bài)
 STUDENTS = {
     "23T1020001": {"name": "Nguyễn Văn An", "lop": "K47A", "scores": {"PMMNM": 8.5, "CSDL": 7.0, "MMT": 9.0}},
     "23T1020002": {"name": "Trần Thị Bình", "lop": "K47A", "scores": {"PMMNM": 6.0, "CSDL": 5.5, "MMT": 7.0}},
@@ -16,17 +16,17 @@ STUDENTS = {
     "23T1020006": {"name": "Võ Quốc Khánh", "lop": "K47C", "scores": {"PMMNM": 7.5, "MMT": 8.0}},
 }
 
-# ----------------- HÀM PHỤ -----------------[cite: 6]
+# ----------------- HÀM PHỤ -----------------
 
 def average(scores):
-    """Tính trung bình cộng điểm số, làm tròn 2 chữ số. Dict rỗng -> None."""[cite: 6]
+    """Tính trung bình cộng điểm số, làm tròn 2 chữ số. Dict rỗng -> None."""
     if not scores:
         return None
     vals = list(scores.values())
     return round(sum(vals) / len(vals), 2)
 
 def rank(avg):
-    """Xếp loại học lực dựa trên điểm trung bình."""[cite: 6]
+    """Xếp loại học lực dựa trên điểm trung bình."""
     if avg is None:
         return "Chưa có điểm"
     if avg >= 8.5:
@@ -38,7 +38,7 @@ def rank(avg):
     return "Yếu"
 
 def student_summary(mssv):
-    """Trả về dict tóm tắt thông tin sinh viên."""[cite: 6]
+    """Trả về dict tóm tắt thông tin sinh viên."""
     if mssv not in STUDENTS:
         return None
     st = STUDENTS[mssv]
@@ -53,7 +53,7 @@ def student_summary(mssv):
     }
 
 def layout(title, body):
-    """Khung HTML dùng chung cho giao diện web."""[cite: 6]
+    """Khung HTML dùng chung cho giao diện web."""
     title_escaped = escape(title)
     return f"""<!DOCTYPE html>
 <html lang="vi">
@@ -78,7 +78,7 @@ def layout(title, body):
 
 # ----------------- PHẦN 1: GIAO DIỆN WEB -----------------
 
-# Câu 1. Trang chủ[cite: 8]
+# Câu 1. Trang chủ
 @app.route("/")
 def index():
     total_students = len(STUDENTS)
@@ -96,21 +96,21 @@ def index():
     """
     return layout("Trang chủ", body)
 
-# Câu 2. Danh sách sinh viên & Lọc theo lớp[cite: 8]
+# Câu 2. Danh sách sinh viên & Lọc theo lớp
 @app.route("/students")
 def student_list():
     lop_filter = request.args.get("lop", "").strip()
     
-    # Lấy danh sách tất cả các lớp để làm thanh lọc[cite: 8]
+    # Lấy danh sách tất cả các lớp để làm thanh lọc
     all_lops = sorted(list(set(st["lop"] for st in STUDENTS.values())))
     
-    # Thanh lọc Tất cả | K47A | K47B ...[cite: 8]
+    # Thanh lọc Tất cả | K47A | K47B ...
     nav_links = [f'<a href="{url_for("student_list")}">Tất cả</a>']
     for l in all_lops:
         nav_links.append(f'<a href="{url_for("student_list", lop=l)}">{escape(l)}</a>')
     filter_bar = " | ".join(nav_links)
     
-    # Lọc danh sách sinh viên[cite: 8]
+    # Lọc danh sách sinh viên
     filtered = []
     for mssv, st in STUDENTS.items():
         if not lop_filter or st["lop"].lower() == lop_filter.lower():
@@ -118,11 +118,11 @@ def student_list():
             filtered.append(summary)
             
     if not filtered:
-        table_html = "<p>Không có sinh viên phù hợp.</p>"[cite: 8]
+        table_html = "<p>Không có sinh viên phù hợp.</p>"
     else:
         rows = []
         for s in filtered:
-            avg_str = f"{s['average']:.2f}" if s['average'] is not None else "-"[cite: 8]
+            avg_str = f"{s['average']:.2f}" if s['average'] is not None else "-"
             detail_url = url_for("student_detail", mssv=s["mssv"])
             rows.append(f"""
             <tr>
@@ -151,22 +151,22 @@ def student_list():
         """
         
     body = f"""
-    <h2>Danh sách sinh viên</h2>
+    2Danh sách sinh viên</h2>
     <p>Lọc lớp: {filter_bar}</p>
     {table_html}
     """
     return layout("Danh sách sinh viên", body)
 
-# Câu 3. Trang chi tiết sinh viên[cite: 9]
+# Câu 3. Trang chi tiết sinh viên
 @app.route("/students/<mssv>")
 def student_detail(mssv):
     if mssv not in STUDENTS:
-        abort(404, description=f"Không có sinh viên với MSSV = {mssv}.")[cite: 9]
+        abort(404, description=f"Không có sinh viên với MSSV = {mssv}.")
         
     s = student_summary(mssv)
-    lop_url = url_for("student_list", lop=s["lop"])[cite: 9]
-    export_url = url_for("export_csv", mssv=mssv)[cite: 10]
-    short_url = url_for("short_student", mssv=mssv)[cite: 10]
+    lop_url = url_for("student_list", lop=s["lop"])
+    export_url = url_for("export_csv", mssv=mssv)
+    short_url = url_for("short_student", mssv=mssv)
     
     scores_rows = []
     for hp, diem in s["scores"].items():
@@ -194,34 +194,34 @@ def student_detail(mssv):
     """
     return layout(f"Sinh viên {s['name']}", body)
 
-# Câu 4. Link rút gọn 301[cite: 9]
+# Câu 4. Link rút gọn 301
 @app.route("/sv/<mssv>")
 def short_student(mssv):
-    return redirect(url_for("student_detail", mssv=mssv), code=301)[cite: 9]
+    return redirect(url_for("student_detail", mssv=mssv), code=301)
 
-# Câu 5. Xuất bảng điểm CSV[cite: 10]
+# Câu 5. Xuất bảng điểm CSV
 @app.route("/students/<mssv>/export")
 def export_csv(mssv):
     if mssv not in STUDENTS:
-        abort(404, description=f"Không có sinh viên với MSSV = {mssv}.")[cite: 10]
+        abort(404, description=f"Không có sinh viên với MSSV = {mssv}.")
         
     st = STUDENTS[mssv]
     output = io.StringIO()
     writer = csv.writer(output)
-    writer.writerow(["hoc_phan", "diem"])[cite: 10]
+    writer.writerow(["hoc_phan", "diem"])
     for hp, diem in st["scores"].items():
         writer.writerow([hp, diem])
         
-    response = make_response(output.getvalue())[cite: 10]
-    response.headers["Content-Type"] = "text/csv; charset=utf-8"[cite: 10]
-    response.headers["Content-Disposition"] = f"attachment; filename=diem_{mssv}.csv"[cite: 10]
+    response = make_response(output.getvalue())
+    response.headers["Content-Type"] = "text/csv; charset=utf-8"
+    response.headers["Content-Disposition"] = f"attachment; filename=diem_{mssv}.csv"
     return response
 
-# Câu 6. Tìm kiếm an toàn (chống XSS)[cite: 11]
+# Câu 6. Tìm kiếm an toàn (chống XSS)
 @app.route("/search")
 def search_student():
     q = request.args.get("q", "").strip()
-    q_escaped = escape(q)  # Escape an toàn cho thuộc tính value và hiển thị[cite: 3, 11]
+    q_escaped = escape(q)  # Escape an toàn cho thuộc tính value và hiển thị
     
     results = []
     if q:
@@ -231,7 +231,7 @@ def search_student():
                 results.append(student_summary(mssv))
                 
     if q:
-        result_header = f"<h3>Tìm thấy {len(results)} kết quả cho “{q_escaped}”</h3>"[cite: 11]
+        result_header = f"<h3>Tìm thấy {len(results)} kết quả cho “{q_escaped}”</h3>"
     else:
         result_header = ""
         
@@ -252,7 +252,7 @@ def search_student():
 
 # ----------------- PHẦN 2: API JSON -----------------
 
-# Câu 7. API đọc dữ liệu sinh viên[cite: 13]
+# Câu 7. API đọc dữ liệu sinh viên
 @app.route("/api/students", methods=["GET"])
 def api_students():
     lop_filter = request.args.get("lop", None)
@@ -263,18 +263,18 @@ def api_students():
         try:
             min_avg = float(min_avg_raw)
         except ValueError:
-            # Tham số sai kiểu -> Trả về lỗi 400[cite: 13]
+            # Tham số sai kiểu -> Trả về lỗi 400
             abort(400, description="Tham số min_avg phải là một số thực hợp lệ.")
             
     res = []
     for mssv in STUDENTS:
         s = student_summary(mssv)
         
-        # Lọc theo lớp[cite: 13]
+        # Lọc theo lớp
         if lop_filter and s["lop"].lower() != lop_filter.lower():
             continue
             
-        # Lọc theo min_avg (bỏ qua sinh viên chưa có điểm)[cite: 13]
+        # Lọc theo min_avg (bỏ qua sinh viên chưa có điểm)
         if min_avg is not None:
             if s["average"] is None or s["average"] < min_avg:
                 continue
@@ -286,24 +286,24 @@ def api_students():
 @app.route("/api/students/<mssv>", methods=["GET"])
 def api_student_detail(mssv):
     if mssv not in STUDENTS:
-        abort(404, description=f"Không tìm thấy sinh viên với MSSV = {mssv}.")[cite: 13]
+        abort(404, description=f"Không tìm thấy sinh viên với MSSV = {mssv}.")
     return jsonify(student_summary(mssv))
 
-# Câu 8. API Quản lý điểm học phần[cite: 14]
+# Câu 8. API Quản lý điểm học phần
 @app.route("/api/students/<mssv>/scores/<course>", methods=["GET", "PUT", "DELETE", "POST"])
 def api_student_course_score(mssv, course):
     if request.method == "POST":
-        abort(405, description="Phương thức POST không được hỗ trợ trên endpoint này.")[cite: 14]
+        abort(405, description="Phương thức POST không được hỗ trợ trên endpoint này.")
         
     if mssv not in STUDENTS:
-        abort(404, description=f"Không tìm thấy sinh viên với MSSV = {mssv}.")[cite: 14]
+        abort(404, description=f"Không tìm thấy sinh viên với MSSV = {mssv}.")
         
     st = STUDENTS[mssv]
-    course_upper = course.upper()  # Luôn lưu & xử lý dạng chữ hoa[cite: 14]
+    course_upper = course.upper()  # Luôn lưu & xử lý dạng chữ hoa
     
     if request.method == "GET":
         if course_upper not in st["scores"]:
-            abort(404, description=f"Chưa có điểm cho học phần {course_upper}.")[cite: 14]
+            abort(404, description=f"Chưa có điểm cho học phần {course_upper}.")
         return jsonify({
             "mssv": mssv,
             "course": course_upper,
@@ -313,15 +313,15 @@ def api_student_course_score(mssv, course):
     elif request.method == "PUT":
         score_raw = request.args.get("score", None)
         if score_raw is None:
-            abort(400, description="Thiếu tham số score.")[cite: 14]
+            abort(400, description="Thiếu tham số score.")
             
         try:
             score_val = float(score_raw)
         except ValueError:
-            abort(400, description="Giá trị score phải là một số.")[cite: 14]
+            abort(400, description="Giá trị score phải là một số.")
             
         if score_val < 0 or score_val > 10:
-            abort(400, description="Điểm phải nằm trong khoảng [0, 10].")[cite: 14]
+            abort(400, description="Điểm phải nằm trong khoảng [0, 10].")
             
         is_new = course_upper not in st["scores"]
         st["scores"][course_upper] = score_val  # Cập nhật điểm
@@ -335,24 +335,24 @@ def api_student_course_score(mssv, course):
         }
         
         if is_new:
-            # Thêm mới: trả mã 201 + Location header[cite: 14]
+            # Thêm mới: trả mã 201 + Location header
             resp = make_response(jsonify(resp_data), 201)
             resp.headers["Location"] = url_for("api_student_course_score", mssv=mssv, course=course_upper)
             return resp
         else:
-            # Sửa điểm: trả mã 200[cite: 14]
+            # Sửa điểm: trả mã 200
             return jsonify(resp_data), 200
             
     elif request.method == "DELETE":
         if course_upper not in st["scores"]:
-            abort(404, description=f"Không thể xoá. Học phần {course_upper} chưa có điểm.")[cite: 14]
+            abort(404, description=f"Không thể xoá. Học phần {course_upper} chưa có điểm.")
             
         del st["scores"][course_upper]
-        return "", 204  # Trả về 204 No Content[cite: 14]
+        return "", 204  # Trả về 204 No Content
 
 # ----------------- PHẦN 3: XỬ LÝ LỖI -----------------
 
-# Câu 9. Trang lỗi thống nhất[cite: 16]
+# Câu 9. Trang lỗi thống nhất
 @app.errorhandler(400)
 @app.errorhandler(404)
 @app.errorhandler(405)
@@ -367,14 +367,14 @@ def handle_error(error):
     title = titles.get(status_code, "Lỗi hệ thống")
     description = getattr(error, 'description', str(error))
     
-    # Nếu đường dẫn bắt đầu bằng /api/ -> Trả về JSON[cite: 16]
+    # Nếu đường dẫn bắt đầu bằng /api/ -> Trả về JSON
     if request.path.startswith("/api/"):
         return jsonify({
             "error": title,
             "detail": description
         }), status_code
     
-    # URL khác -> Trả về giao diện HTML sử dụng layout()[cite: 16]
+    # URL khác -> Trả về giao diện HTML sử dụng layout()
     body = f"""
     <h2>Lỗi {status_code}: {escape(title)}</h2>
     <p>{escape(description)}</p>
