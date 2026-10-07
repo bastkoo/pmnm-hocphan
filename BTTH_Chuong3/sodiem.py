@@ -522,3 +522,38 @@ def api_student_course_score(mssv, course):
             
         del st["scores"][course_upper]
         return "", 204  # Trả về 204 No Content[cite: 14]
+
+# ----------------- PHẦN 3: XỬ LÝ LỖI -----------------
+
+# Câu 9. Trang lỗi thống nhất[cite: 16]
+@app.errorhandler(400)
+@app.errorhandler(404)
+@app.errorhandler(405)
+def handle_error(error):
+    status_code = error.code if hasattr(error, 'code') else 500
+    
+    titles = {
+        400: "Dữ liệu không hợp lệ",
+        404: "Không tìm thấy",
+        405: "Phương thức không được hỗ trợ"
+    }
+    title = titles.get(status_code, "Lỗi hệ thống")
+    description = getattr(error, 'description', str(error))
+    
+    # Nếu đường dẫn bắt đầu bằng /api/ -> Trả về JSON[cite: 16]
+    if request.path.startswith("/api/"):
+        return jsonify({
+            "error": title,
+            "detail": description
+        }), status_code
+    
+    # URL khác -> Trả về giao diện HTML sử dụng layout()[cite: 16]
+    body = f"""
+    <h2>Lỗi {status_code}: {escape(title)}</h2>
+    <p>{escape(description)}</p>
+    <p><a href="{url_for('index')}">Quay lại Trang chủ</a></p>
+    """
+    return layout(f"Lỗi {status_code}", body), status_code
+
+if __name__ == "__main__":
+    app.run(port=8000, debug=True)
