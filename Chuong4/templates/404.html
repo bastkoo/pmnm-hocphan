@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}Không tìm thấy trang (404){% endblock %}
+
+{% block content %}
+<div class="container py-5 text-center">
+    <div class="card shadow-sm border-0 p-5 rounded-4 bg-white mx-auto" style="max-width: 600px;">
+        <h1 class="display-1 fw-bold text-danger">404</h1>
+        <h2 class="h4 mb-3">Oops! Trang bạn tìm kiếm không tồn tại.</h2>
+        <p class="text-muted mb-4">Đường dẫn có thể đã bị thay đổi hoặc không có thực.</p>
+        <div>
+            <a href="/" class="btn btn-primary px-4">Trở về Trang chủ</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

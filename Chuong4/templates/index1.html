@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}{{ shop.name }} - Trang Chủ{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            
+            <!-- Card chính hiển thị thông tin cửa hàng -->
+            <div class="card shadow-sm border-0 p-4 mb-4 rounded-4">
+                <h1 class="text-primary fw-bold mb-3">{{ shop.name | title }}</h1>
+                <p class="mb-1 text-muted"><strong>📍 Địa chỉ:</strong> {{ shop.address }}</p>
+                <p class="mb-1 text-muted"><strong>⏰ Giờ mở cửa:</strong> {{ shop.open }}h - {{ shop.close }}h</p>
+                <p class="mb-3"><strong>⌛ Giờ hiện tại:</strong> <span class="badge bg-secondary fs-6">{{ hour }}h</span></p>
+                
+                <!-- Trạng thái mở/đóng cửa dùng Alert của Bootstrap -->
+                {% if is_open %}
+                    <div class="alert alert-success border-0 mb-0 rounded-3 shadow-sm" role="alert">
+                        🟢 <strong>Cửa hàng đang mở cửa.</strong> Mời bạn ghé quán!
+                    </div>
+                {% else %}
+                    <div class="alert alert-danger border-0 mb-0 rounded-3 shadow-sm" role="alert">
+                        🔴 <strong>Cửa hàng đang đóng cửa.</strong> Hẹn gặp lại bạn vào khung giờ mở cửa nhé!
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Phần khuyến mãi -->
+            <div class="card shadow-sm border-0 p-4 rounded-4">
+                <h2 class="h4 text-secondary mb-3">🎁 Khuyến mãi hôm nay</h2>
+                <ul class="list-group list-group-flush">
+                    {% for promo in promotions %}
+                        <li class="list-group-item bg-transparent text-success fw-semibold border-0 py-2">✨ {{ promo }}</li>
+                    {% else %}
+                        <li class="list-group-item bg-transparent text-muted fst-italic border-0 py-2">Hiện tại chưa có chương trình khuyến mãi</li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

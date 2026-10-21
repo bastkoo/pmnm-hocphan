@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}Danh Sách Thực Đơn - Cafe Sông Hương{% endblock %}
+
+{% block content %}
+<!-- Import macros từ file _macros.html -->
+{% import "_macros.html" as macros %}
+
+<div class="container py-5">
+    <h2 class="h3 text-primary fw-bold mb-4 text-center">📋 Danh Sách Thực Đơn</h2>
+
+    <div class="row g-4">
+        {% for item in items_on_page %}
+            <div class="col-md-4">
+                {{ macros.item_card(item) }}
+            </div>
+        {% else %}
+            <div class="col-12 text-center text-muted">
+                <p>Không có món ăn nào trong trang này.</p>
+            </div>
+        {% endfor %}
+    </div>
+
+    <!-- Hiển thị thanh phân trang -->
+    {{ macros.pagination(current_page, total_pages, 'menu_route') }}
+</div>
+{% endblock %}
