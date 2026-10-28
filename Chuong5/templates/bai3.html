@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bài 3 - Tính chỉ số BMI</title>
+    <!-- Nhúng Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Nhúng FontAwesome để dùng icon cho sinh động -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+        }
+        body {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            min-height: 100vh;
+            padding-top: 90px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .card-custom {
+            max-width: 520px;
+            margin: 0 auto;
+            border: none;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            background: #ffffff;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+        .card-header-custom {
+            background: var(--primary-gradient);
+            color: white;
+            padding: 24px;
+            text-align: center;
+        }
+        .form-control-lg {
+            border-radius: 12px;
+            padding: 12px 16px;
+            font-size: 1rem;
+            border: 2px solid #e2e8f0;
+            transition: all 0.2s ease;
+        }
+        .form-control-lg:focus {
+            border-color: #6366f1;
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
+        }
+        .input-group-text {
+            background-color: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-right: none;
+            border-radius: 12px 0 0 12px;
+            color: #64748b;
+        }
+        .input-group .form-control-lg {
+            border-left: none;
+            border-radius: 0 12px 12px 0;
+        }
+        .btn-custom {
+            background: var(--primary-gradient);
+            border: none;
+            border-radius: 12px;
+            padding: 14px;
+            font-size: 1.1rem;
+            color: white;
+            transition: all 0.2s ease;
+        }
+        .btn-custom:hover {
+            opacity: 0.95;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+        }
+        .alert-custom {
+            border-radius: 14px;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Include Navbar chung -->
+    {% include 'navbar.html' %}
+
+    <div class="container py-4">
+        <div class="card card-custom">
+            <!-- Header có màu gradient hiện đại -->
+            <div class="card-header-custom">
+                <h3 class="fw-bold mb-1"><i class="fa-solid fa-calculator me-2"></i>Tính Chỉ Số BMI</h3>
+                <p class="mb-0 text-white-50 small">Theo dõi và đánh giá thể trạng chuẩn người Châu Á</p>
+            </div>
+
+            <div class="card-body p-4 p-md-5">
+                <form action="{{ url_for('bai3') }}" method="POST" novalidate>
+                    <!-- Chiều cao -->
+                    <div class="mb-3">
+                        <label for="chieu_cao" class="form-label fw-semibold text-secondary">Chiều cao (cm)</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fa-solid fa-ruler-vertical"></i></span>
+                            <input 
+                                type="text" 
+                                class="form-control form-control-lg {% if error_cc %}is-invalid{% endif %}" 
+                                id="chieu_cao" 
+                                name="chieu_cao" 
+                                placeholder="Ví dụ: 170 hoặc 170,5" 
+                                value="{{ chieu_cao }}"
+                            >
+                            {% if error_cc %}
+                                <div class="invalid-feedback">{{ error_cc }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Cân nặng -->
+                    <div class="mb-4">
+                        <label for="can_nang" class="form-label fw-semibold text-secondary">Cân nặng (kg)</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fa-solid fa-weight-scale"></i></span>
+                            <input 
+                                type="text" 
+                                class="form-control form-control-lg {% if error_cn %}is-invalid{% endif %}" 
+                                id="can_nang" 
+                                name="can_nang" 
+                                placeholder="Ví dụ: 65 hoặc 65,5" 
+                                value="{{ can_nang }}"
+                            >
+                            {% if error_cn %}
+                                <div class="invalid-feedback">{{ error_cn }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-custom w-100 fw-bold shadow-sm">
+                        <i class="fa-solid fa-chart-line me-2"></i>Xem Kết Quả Ngay
+                    </button>
+                </form>
+
+                <!-- Khu vực hiển thị kết quả -->
+                {% if bmi is not none %}
+                    <hr class="my-4 text-muted opacity-25">
+                    <div class="alert alert-{{ mau_sac }} alert-custom text-center shadow-sm p-4 mb-0" role="alert">
+                        <h4 class="alert-heading fw-bold mb-2">
+                            <i class="fa-solid fa-heart-pulse me-1"></i> Chỉ số BMI: {{ bmi }}
+                        </h4>
+                        <p class="fs-5 mb-2">Phân loại: <strong class="text-uppercase">{{ phan_loai }}</strong></p>
+                        
+                        {% if can_nang_ly_tuong %}
+                            <div class="bg-white bg-opacity-75 rounded-3 p-2 mt-3 shadow-sm">
+                                <small class="text-dark">
+                                    <i class="fa-solid fa-lightbulb text-warning me-1"></i> <strong>Cân nặng lý tưởng (BMI 18.5 - 22.9):</strong><br>
+                                    <span class="text-primary fw-bold fs-6">{{ can_nang_ly_tuong }}</span>
+                                </small>
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

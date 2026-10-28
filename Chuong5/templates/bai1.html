@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bài 1 - Máy tính Flask</title>
+    <!-- Nhúng Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Nhúng FontAwesome icon -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+        }
+        body {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            min-height: 100vh;
+            padding-top: 90px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .card-custom {
+            max-width: 520px;
+            margin: 0 auto;
+            border: none;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            background: #ffffff;
+            overflow: hidden;
+        }
+        .card-header-custom {
+            background: var(--primary-gradient);
+            color: white;
+            padding: 24px;
+            text-align: center;
+        }
+        .form-control-lg, .form-select-lg {
+            border-radius: 12px;
+            padding: 12px 16px;
+            font-size: 1rem;
+            border: 2px solid #e2e8f0;
+            transition: all 0.2s ease;
+        }
+        .form-control-lg:focus, .form-select-lg:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
+        }
+        .input-group-text {
+            background-color: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-right: none;
+            border-radius: 12px 0 0 12px;
+            color: #64748b;
+        }
+        .input-group .form-control-lg {
+            border-left: none;
+            border-radius: 0 12px 12px 0;
+        }
+        .btn-custom {
+            background: var(--primary-gradient);
+            border: none;
+            border-radius: 12px;
+            padding: 14px;
+            font-size: 1.1rem;
+            color: white;
+            transition: all 0.2s ease;
+        }
+        .btn-custom:hover {
+            opacity: 0.95;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+        .alert-custom {
+            border-radius: 14px;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Include Navbar chung -->
+    {% include 'navbar.html' %}
+
+    <div class="container py-4">
+        <div class="card card-custom">
+            <!-- Header màu xanh dương hiện đại -->
+            <div class="card-header-custom">
+                <h3 class="fw-bold mb-1"><i class="fa-solid fa-calculator me-2"></i>Máy Tính Flask</h3>
+                <p class="mb-0 text-white-50 small">Thực hiện các phép tính cơ bản (+, -, *, /) hỗ trợ dấu phẩy thập phân</p>
+            </div>
+
+            <div class="card-body p-4 p-md-5">
+                <form action="{{ url_for('bai1') }}" method="POST" novalidate>
+                    <!-- Số a -->
+                    <div class="mb-3">
+                        <label for="num_a" class="form-label fw-semibold text-secondary">Số a</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fa-solid fa-hashtag"></i></span>
+                            <input 
+                                type="text" 
+                                class="form-control form-control-lg" 
+                                id="num_a" 
+                                name="num_a" 
+                                placeholder="Ví dụ: 5,5 hoặc 5.5" 
+                                value="{{ num_a }}" 
+                                required
+                            >
+                        </div>
+                    </div>
+
+                    <!-- Phép toán -->
+                    <div class="mb-3">
+                        <label for="op" class="form-label fw-semibold text-secondary">Phép toán</label>
+                        <select id="op" name="op" class="form-select form-select-lg">
+                            <option value="+" {% if op == '+' %}selected{% endif %}>Cộng (+)</option>
+                            <option value="-" {% if op == '-' %}selected{% endif %}>Trừ (-)</option>
+                            <option value="*" {% if op == '*' %}selected{% endif %}>Nhân (*)</option>
+                            <option value="/" {% if op == '/' %}selected{% endif %}>Chia (/)</option>
+                        </select>
+                    </div>
+
+                    <!-- Số b -->
+                    <div class="mb-4">
+                        <label for="num_b" class="form-label fw-semibold text-secondary">Số b</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fa-solid fa-hashtag"></i></span>
+                            <input 
+                                type="text" 
+                                class="form-control form-control-lg" 
+                                id="num_b" 
+                                name="num_b" 
+                                placeholder="Ví dụ: 2,5 hoặc 2.5" 
+                                value="{{ num_b }}" 
+                                required
+                            >
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-custom w-100 fw-bold shadow-sm">
+                        <i class="fa-solid fa-equals me-2"></i>Tính Toán Ngay
+                    </button>
+                </form>
+
+                <!-- Hiển thị kết quả -->
+                {% if result is not none %}
+                    <hr class="my-4 text-muted opacity-25">
+                    <div class="alert alert-success alert-custom text-center shadow-sm p-4 mb-0" role="alert">
+                        <h4 class="alert-heading fw-bold mb-1">
+                            <i class="fa-solid fa-circle-check me-1"></i> Kết quả
+                        </h4>
+                        <p class="fs-4 fw-bold text-success mb-0">{{ result }}</p>
+                    </div>
+                {% endif %}
+
+                <!-- Hiển thị lỗi -->
+                {% if error %}
+                    <hr class="my-4 text-muted opacity-25">
+                    <div class="alert alert-danger alert-custom text-center shadow-sm p-3 mb-0" role="alert">
+                        <i class="fa-solid fa-triangle-exclamation me-1"></i> {{ error }}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
