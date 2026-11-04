@@ -2,7 +2,7 @@
 from flask import Flask, render_template, request
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import DeclarativeBase, relationship,Mapped, mapped_column
-from sqlalchemy import String
+from sqlalchemy import TEXT, String
 class Base(DeclarativeBase):
     pass
 db = SQLAlchemy(model_class=Base)
@@ -32,6 +32,32 @@ def add_sample():
     ])
     db.session.commit()
     return f"Đã thêm 5 mẫu sinh viên. ID trước commit: {before}, ID sau commit: {an.id}"
+
+@app.get("/thu-truy-van")
+def try_queries():
+    if db.session.scalar(db.select(db.func.count(Student.id))) == 0:
+        return "Cơ sở dữ liệu rỗng. Vui lòng truy cập /them-mau trước."
+    line = []
+    lines = []
+    lines.append(f"1. get(3): {db.session.get(Student, 3)}")
+    lines.append(f"2. get(99): {db.session.get(Student, 99)}")
+    everyone = db.session.scalars(db.select(Student)).all()
+    lines.append(f"3. Tất cả {len(everyone)} sinh viên")
+    stmt = (db.select(Student).where(Student.gpa >= 8.0)).order_by(Student.gpa.desc())
+    good = db.session.scalars(stmt).all()
+    lines.append(f"4. Sinh viên có GPA >= 8.0: {good}")
+    binh = db.session.scalar(db.select(Student).filter_by(mssv="23T1080005"))
+    lines.append(f"5. Sinh viên với MSSV 23T1080005: {binh}")
+    count = db.session.scalar(db.select(db.func.count(Student.id)))
+    avg = db.session.scalar(db.select(db.func.avg(Student.gpa)))
+    lines.append(f"6. Tổng số sinh viên: {count}, GPA trung bình: {avg:.2f}")
+
+   
+    return "\n".join(lines), 200, {'Content-Type': 'text/plain; charset=utf-8'}
+@app.get("/ds-sinh-vien")
+def list_students():
+    students = db.session.scalars(db.select(Student).order_by(Student.gpa.desc())).all()
+    return render_template('students.html', students=students)
 class Student(db.Model):
     __tablename__ = 'students'
     id: Mapped[int] = mapped_column(primary_key=True)

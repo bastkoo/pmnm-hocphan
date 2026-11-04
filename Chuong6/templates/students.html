@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Danh sách Sinh viên</title>
+    <!-- Nhúng Bootstrap 5 CDN để trang web đẹp và chuẩn responsive -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+    <div class="container mt-5">
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h3 class="mb-0">Danh sách Sinh viên</h3>
+            </div>
+            <div class="card-body">
+                <!-- Kiểm tra nếu danh sách sinh viên có dữ liệu -->
+                {% if students %}
+                    <table class="table table-striped table-hover align-middle">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>ID</th>
+                                <th>MSSV</th>
+                                <th>Họ và Tên</th>
+                                <th>GPA</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Dùng vòng lặp Jinja2 để duyệt qua từng sinh viên -->
+                            {% for s in students %}
+                            <tr>
+                                <td>{{ s.id }}</td>
+                                <td><strong>{{ s.mssv }}</strong></td>
+                                <td>{{ s.name }}</td>
+                                <td>
+                                    <!-- Đổi màu chữ GPA cho sinh viên giỏi (>= 8.0) -->
+                                    <span class="badge {% if s.gpa >= 8.0 %}bg-success{% elif s.gpa >= 5.0 %}bg-warning text-dark{% else %}bg-danger{% endif %}">
+                                        {{ s.gpa }}
+                                    </span>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% else %}
+                    <!-- Thông báo nếu chưa có sinh viên nào trong database -->
+                    <div class="alert alert-warning text-center mb-0" role="alert">
+                        Chưa có dữ liệu sinh viên nào trong cơ sở dữ liệu!
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</body>
+</html>
