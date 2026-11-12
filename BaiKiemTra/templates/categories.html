@@ -1,0 +1,111 @@
+{% extends 'base.html' %}{% block title %}Danh mục sách{% endblock %}{% block
+content %}
+<div class="page-head">
+  <div>
+    <div class="eyebrow">TỔ CHỨC THƯ VIỆN</div>
+    <h1>Danh mục sách</h1>
+    <p>Phân loại và tổ chức kho sách của bạn một cách khoa học.</p>
+  </div>
+  <button class="btn primary" onclick="openModal('category-modal')">
+    + Thêm danh mục
+  </button>
+</div>
+<section class="panel full">
+  <div class="panel-title">
+    <div>
+      <h3>Danh sách danh mục</h3>
+      <p>Quản lý các nhóm sách trong thư viện</p>
+    </div>
+    <form class="search" method="get">
+      <input name="q" placeholder="⌕  Tìm danh mục..." value="{{q}}" /><button
+        class="btn light"
+      >
+        Tìm
+      </button>
+    </form>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>MÃ</th>
+          <th>TÊN DANH MỤC</th>
+          <th>MÔ TẢ</th>
+          <th>SỐ SÁCH</th>
+          <th>THAO TÁC</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for c in items %}
+        <tr>
+          <td class="muted">#{{'%03d'|format(c.id)}}</td>
+          <td><strong>{{c.name}}</strong></td>
+          <td class="desc">{{c.description or '—'}}</td>
+          <td><span class="tag">{{c.books|length}} sách</span></td>
+          <td>
+            <div class="actions">
+              <button
+                class="icon-btn"
+                title="Sửa"
+                data-edit-category
+                data-id="{{c.id}}"
+                data-name="{{c.name}}"
+                data-description="{{c.description or ''}}"
+              >
+                ✎
+              </button>
+              <form
+                action="{{url_for('delete_category',ident=c.id)}}"
+                method="post"
+                onsubmit="return confirm('Xóa danh mục này?');"
+              >
+                <button class="icon-btn danger" title="Xóa">♲</button>
+              </form>
+            </div>
+          </td>
+        </tr>
+        {% else %}
+        <tr>
+          <td colspan="5" class="empty">Không tìm thấy danh mục nào.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+<div class="modal-backdrop" id="category-modal">
+  <div class="modal">
+    <div class="modal-head">
+      <h3 id="category-modal-title">Thêm danh mục</h3>
+      <button class="icon-btn" onclick="closeModal('category-modal')">✕</button>
+    </div>
+    <form action="{{url_for('save_category')}}" method="post">
+      <input type="hidden" name="id" id="category-id" /><label
+        >Tên danh mục <em>*</em
+        ><input
+          name="name"
+          id="category-name"
+          required
+          maxlength="150"
+          placeholder="Ví dụ: Văn học" /></label
+      ><label
+        >Mô tả<textarea
+          name="description"
+          id="category-description"
+          rows="4"
+          placeholder="Mô tả ngắn về danh mục..."
+        ></textarea>
+      </label>
+      <div class="modal-actions">
+        <button
+          type="button"
+          class="btn light"
+          onclick="closeModal('category-modal')"
+        >
+          Hủy</button
+        ><button class="btn primary">Lưu danh mục</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
