@@ -1,0 +1,35 @@
+{% extends 'base.html' %}{% block title %}Chi tiết sách{% endblock %}{% block
+content %}
+<div class="page-head">
+  <div>
+    <div class="eyebrow">THÔNG TIN ĐẦU SÁCH</div>
+    <h1>Chi tiết sách</h1>
+    <p>Thông tin đầy đủ về đầu sách trong thư viện.</p>
+  </div>
+  <a href="{{url_for('books')}}" class="btn light">← Quay lại</a>
+</div>
+<section class="panel detail">
+  <div class="detail-cover">
+    {% if book.image_url %}<img
+      src="{{book.image_url}}"
+      alt="Bìa {{book.title}}"
+    />{% else %}📘{% endif %}
+  </div>
+  <div>
+    <span class="tag">{{book.category.name}}</span>
+    <h2>{{book.title}}</h2>
+    <p class="muted">Tác giả: {{book.author}}</p>
+    <div class="detail-meta">
+      <div><small>Giá bán</small><strong>{{book.price|money}}</strong></div>
+      <div>
+        <small>Số lượng tồn</small><strong>{{book.quantity}} bản</strong>
+      </div>
+      <div>
+        <small>Mã ISBN</small><strong>{{book.isbn or 'Chưa cập nhật'}}</strong>
+      </div>
+    </div>
+    <h3>Mô tả</h3>
+    <p>{{book.description or 'Chưa có mô tả cho sách này.'}}</p>
+  </div>
+</section>
+{% endblock %}
