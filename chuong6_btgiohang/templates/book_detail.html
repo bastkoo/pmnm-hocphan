@@ -1,3 +1,73 @@
-{% from 'icons.html' import icon %}
-{% extends 'base.html' %}{% from 'macros.html' import csrf,cover with context %}{% block title %}{{ book.title }} · Sông Hương{% endblock %}
-{% block content %}<p class="breadcrumb"><a href="{{ url_for('books') }}">Sách</a> / <a href="{{ url_for('books', category=book.category_id) }}">{{ book.category.name }}</a> / {{ book.title }}</p><div class="detail-grid"><div>{{ cover(book) }}</div><section class="panel"><p class="eyebrow">{{ book.category.name }}</p><h1>{{ book.title }}</h1><p>{{ book.author }} · {{ book.publisher or 'Chưa cập nhật NXB' }}{% if book.year %}, {{ book.year }}{% endif %}</p><p class="large-price">{{ book.price|money }}</p><p class="{{ 'text-success' if book.stock else 'text-danger' }}">{{ 'Còn ' ~ book.stock ~ ' cuốn' if book.stock else 'Hết hàng' }}</p><p>{{ book.description or 'Chưa có mô tả.' }}</p><form method="post" action="{{ url_for('cart_add', book_id=book.id) }}">{{ csrf() }}<input type="hidden" name="next" value="{{ request.path }}"><label for="quantity" class="form-label">Số lượng</label><div class="quantity"><button type="button" data-step="-1" aria-label="Giảm số lượng">−</button><input id="quantity" type="number" name="quantity" value="{{ 1 if available else 0 }}" min="1" max="{{ available }}" {% if not available %}disabled{% endif %}><button type="button" data-step="1" aria-label="Tăng số lượng" {% if not available %}disabled{% endif %}>+</button></div><p class="muted small">Tối đa {{ available }} (đã có {{ in_cart }} trong giỏ)</p><button class="btn btn-primary" {% if not available %}disabled{% endif %}>{{ icon('cart') }} {{ 'Thêm vào giỏ hàng' if available else 'Hết hàng hoặc đã chọn đủ tồn kho' }}</button></form></section></div>{% endblock %}
+{% from 'icons.html' import icon %} {% extends 'base.html' %}{% from
+'macros.html' import csrf,cover with context %}{% block title %}{{ book.title }}
+· Sông Hương{% endblock %} {% block content %}
+<p class="breadcrumb">
+  <a href="{{ url_for('books') }}">Sách</a> /
+  <a href="{{ url_for('books', category=book.category_id) }}"
+    >{{ book.category.name }}</a
+  >
+  / {{ book.title }}
+</p>
+<div class="detail-grid">
+  <div>{{ cover(book) }}</div>
+  <section class="panel">
+    <p class="eyebrow">{{ book.category.name }}</p>
+    <h1>{{ book.title }}</h1>
+    <p>
+      {{ book.author }} · {{ book.publisher or 'Chưa cập nhật NXB' }}{% if
+      book.year %}, {{ book.year }}{% endif %}
+    </p>
+    <p class="large-price">{{ book.price|money }}</p>
+    <p class="{{ 'text-success' if book.stock else 'text-danger' }}">
+      {{ 'Còn ' ~ book.stock ~ ' cuốn' if book.stock else 'Hết hàng' }}
+    </p>
+    <p>{{ book.description or 'Chưa có mô tả.' }}</p>
+    <form method="post" action="{{ url_for('cart_add', book_id=book.id) }}">
+      {{ csrf() }}<input
+        type="hidden"
+        name="next"
+        value="{{ request.path }}"
+      /><label for="quantity" class="form-label">Số lượng</label>
+      <div class="quantity">
+        <button type="button" data-step="-1" aria-label="Giảm số lượng">
+          −</button
+        ><input
+          id="quantity"
+          type="number"
+          name="quantity"
+          value="{{ 1 if available else 0 }}"
+          min="1"
+          max="{{ available }}"
+          {%
+          if
+          not
+          available
+          %}disabled{%
+          endif
+          %}
+        /><button
+          type="button"
+          data-step="1"
+          aria-label="Tăng số lượng"
+          {%
+          if
+          not
+          available
+          %}disabled{%
+          endif
+          %}
+        >
+          +
+        </button>
+      </div>
+      <p class="muted small">
+        Tối đa {{ available }} (đã có {{ in_cart }} trong giỏ)
+      </p>
+      <button class="btn btn-primary" {% if not available %}disabled{% endif %}>
+        {{ icon('cart') }} {{ 'Thêm vào giỏ hàng' if available else 'Hết hàng
+        hoặc đã chọn đủ tồn kho' }}
+      </button>
+    </form>
+  </section>
+</div>
+{% endblock %}

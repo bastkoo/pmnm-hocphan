@@ -1,3 +1,50 @@
-{% from 'icons.html' import icon %}
-{% extends 'base.html' %}{% from 'macros.html' import field with context %}
-{% block content %}<p class="eyebrow">HOÀN TẤT ĐƠN HÀNG</p><h1>Thông tin khách hàng</h1><div class="two-columns"><form method="post" class="panel" novalidate>{{ form.hidden_tag() }}{{ field(form.customer_name) }}<div class="two-fields">{{ field(form.phone) }}{{ field(form.email) }}</div>{{ field(form.address) }}{{ field(form.note) }}<div class="field">{{ form.payment.label(class='form-label') }}{% for option in form.payment %}<label class="radio">{{ option() }} {{ option.label.text }}</label>{% endfor %}{% for error in form.payment.errors %}<p class="text-danger">{{ error }}</p>{% endfor %}</div><div class="actions"><button class="btn btn-primary">{{ icon('check') }} Xác nhận đặt hàng</button><a href="{{ url_for('cart') }}">← Quay lại giỏ hàng</a></div></form><aside class="panel summary"><h2>Đơn hàng của bạn</h2>{% for line in lines %}<div class="summary-line"><span>{{ line.book.title }} × {{ line.quantity }}</span><strong>{{ line.subtotal|money }}</strong></div>{% endfor %}<hr><div class="summary-line"><span>Tạm tính</span><span>{{ subtotal|money }}</span></div><div class="summary-line"><span>Phí giao hàng</span><span>{{ fee|money if fee else 'Miễn phí' }}</span></div><p class="muted small">Miễn phí khi tạm tính từ 200.000 đ</p><div class="total-row"><span>Tổng thanh toán</span><strong>{{ (subtotal+fee)|money }}</strong></div><p class="small muted">{% if form.payment.data == 'bank' %}Nhà sách sẽ liên hệ cung cấp thông tin chuyển khoản sau khi xác nhận đơn.{% else %}Thanh toán khi nhận sách.{% endif %}</p></aside></div>{% endblock %}
+{% from 'icons.html' import icon %} {% extends 'base.html' %}{% from
+'macros.html' import field with context %} {% block content %}
+<p class="eyebrow">HOÀN TẤT ĐƠN HÀNG</p>
+<h1>Thông tin khách hàng</h1>
+<div class="two-columns">
+  <form method="post" class="panel" novalidate>
+    {{ form.hidden_tag() }}{{ field(form.customer_name) }}
+    <div class="two-fields">{{ field(form.phone) }}{{ field(form.email) }}</div>
+    {{ field(form.address) }}{{ field(form.note) }}
+    <div class="field">
+      {{ form.payment.label(class='form-label') }}{% for option in form.payment
+      %}<label class="radio">{{ option() }} {{ option.label.text }}</label>{%
+      endfor %}{% for error in form.payment.errors %}
+      <p class="text-danger">{{ error }}</p>
+      {% endfor %}
+    </div>
+    <div class="actions">
+      <button class="btn btn-primary">
+        {{ icon('check') }} Xác nhận đặt hàng</button
+      ><a href="{{ url_for('cart') }}">← Quay lại giỏ hàng</a>
+    </div>
+  </form>
+  <aside class="panel summary">
+    <h2>Đơn hàng của bạn</h2>
+    {% for line in lines %}
+    <div class="summary-line">
+      <span>{{ line.book.title }} × {{ line.quantity }}</span
+      ><strong>{{ line.subtotal|money }}</strong>
+    </div>
+    {% endfor %}
+    <hr />
+    <div class="summary-line">
+      <span>Tạm tính</span><span>{{ subtotal|money }}</span>
+    </div>
+    <div class="summary-line">
+      <span>Phí giao hàng</span
+      ><span>{{ fee|money if fee else 'Miễn phí' }}</span>
+    </div>
+    <p class="muted small">Miễn phí khi tạm tính từ 200.000 đ</p>
+    <div class="total-row">
+      <span>Tổng thanh toán</span><strong>{{ (subtotal+fee)|money }}</strong>
+    </div>
+    <p class="small muted">
+      {% if form.payment.data == 'bank' %}Nhà sách sẽ liên hệ cung cấp thông tin
+      chuyển khoản sau khi xác nhận đơn.{% else %}Thanh toán khi nhận sách.{%
+      endif %}
+    </p>
+  </aside>
+</div>
+{% endblock %}
