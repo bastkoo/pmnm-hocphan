@@ -1,0 +1,18 @@
+{
+  "files.associations": {
+    "*.html": "jinja-html"
+  },
+  "emmet.includeLanguages": {
+    "jinja-html": "html"
+  },
+  "html.validate.scripts": false,
+  "html.validate.styles": false,
+  "css.validate": false,
+  "[jinja-html]": {
+    "editor.quickSuggestions": {
+      "other": true,
+      "comments": false,
+      "strings": true
+    }
+  }
+}

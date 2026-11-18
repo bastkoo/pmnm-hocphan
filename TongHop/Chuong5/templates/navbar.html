@@ -1,0 +1,90 @@
+<!-- Navbar hiện đại sử dụng Bootstrap 5 & Glassmorphism -->
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top navbar-glass">
+    <div class="container">
+        <!-- Brand / Logo -->
+        <a class="navbar-brand fw-bold d-flex align-items-center" href="{{ url_for('bai1') }}">
+            <div class="logo-icon-box me-2">
+                <i class="fa-solid fa-code text-white"></i>
+            </div>
+            <span>Buổi 7 - 23t1080004</span>
+        </a>
+
+        <!-- Nút toggle cho thiết bị di động (Responsive) -->
+        <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Menu items -->
+        <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+            <ul class="navbar-nav align-items-lg-center gap-2">
+                <li class="nav-item">
+                    <a class="nav-link px-3 py-2 rounded-pill transition-all {% if active_page == 'bai1' %}active-custom{% endif %}" href="{{ url_for('bai1') }}">
+                        <i class="fa-solid fa-calculator me-1"></i> Bài 1: Máy tính
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link px-3 py-2 rounded-pill transition-all {% if active_page == 'bai2' %}active-custom{% endif %}" href="{{ url_for('bai2') }}">
+                        <i class="fa-solid fa-graduation-cap me-1"></i> Bài 2: Điểm học phần
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link px-3 py-2 rounded-pill transition-all {% if active_page == 'bai3' %}active-custom{% endif %}" href="{{ url_for('bai3') }}">
+                        <i class="fa-solid fa-weight-scale me-1"></i> Bài 3: Chỉ số BMI
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<style>
+    /* Hiệu ứng kính mờ (Glassmorphism) hiện đại */
+    .navbar-glass {
+        background: rgba(15, 23, 42, 0.85);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 12px 0;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        z-index: 1030;
+    }
+
+    /* Logo icon box */
+    .logo-icon-box {
+        width: 36px;
+        height: 36px;
+        background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3);
+    }
+
+    /* Style cho các link trên navbar */
+    .navbar-nav .nav-link {
+        color: #94a3b8 !important;
+        font-weight: 500;
+        font-size: 0.95rem;
+        transition: all 0.25s ease-in-out;
+    }
+
+    .navbar-nav .nav-link:hover {
+        color: #ffffff !important;
+        background-color: rgba(255, 255, 255, 0.08);
+        transform: translateY(-1px);
+    }
+
+    /* Style khi đang ở trang tương ứng (Active) */
+    .navbar-nav .nav-link.active-custom {
+        color: #ffffff !important;
+        background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.35);
+        font-weight: 600;
+    }
+
+    /* Đẩy phần thân trang xuống tránh bị navbar fixed che khuất */
+    body {
+        padding-top: 85px !important;
+    }
+</style>

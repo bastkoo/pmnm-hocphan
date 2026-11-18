@@ -1,0 +1,350 @@
+
+{% extends 'base.html' %}
+
+{% block title %}Quản lý sách{% endblock %}
+
+{% block content %}
+
+<!-- PAGE HEADER -->
+<div class="page-head">
+  <div>
+    <div class="eyebrow">KHO TRI THỨC</div>
+    <h1>Quản lý sách</h1>
+    <p>Thêm mới, cập nhật và quản lý toàn bộ đầu sách.</p>
+  </div>
+
+  <button
+    type="button"
+    class="btn primary"
+    onclick="openModal('book-modal')"
+  >
+    + Thêm sách mới
+  </button>
+</div>
+
+<!-- BOOK LIST -->
+<section class="panel full">
+  <div class="panel-title">
+    <div>
+      <h3>Kho sách của bạn</h3>
+      <p>Danh sách tất cả đầu sách trong hệ thống</p>
+    </div>
+
+    <!-- SEARCH AND FILTER -->
+    <form class="search" method="get">
+      <input
+        type="text"
+        name="q"
+        value="{{ q }}"
+        placeholder="⌕ Tìm tên sách, tác giả, ISBN..."
+      >
+
+      <select name="category">
+        <option value="">Tất cả danh mục</option>
+
+        {% for c in categories %}
+        <option
+          value="{{ c.id }}"
+          {% if selected_category == c.id %}selected{% endif %}
+        >
+          {{ c.name }}
+        </option>
+        {% endfor %}
+      </select>
+
+      <button type="submit" class="btn light">
+        Lọc
+      </button>
+    </form>
+  </div>
+
+  <!-- BOOK TABLE -->
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>SÁCH</th>
+          <th>DANH MỤC</th>
+          <th>GIÁ BÁN</th>
+          <th>TỒN KHO</th>
+          <th>THAO TÁC</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {% for b in items %}
+        <tr>
+          <!-- BOOK INFORMATION -->
+          <td>
+            <div class="book-cell">
+              <div class="cover">
+                {% if b.image_url %}
+                <img
+                  src="{{ b.image_url }}"
+                  alt="Bìa sách"
+                  onerror="this.style.display='none'"
+                >
+                {% else %}
+                📘
+                {% endif %}
+              </div>
+
+              <div>
+                <a
+                  class="book-name"
+                  href="{{ url_for('book_detail', ident=b.id) }}"
+                >
+                  {{ b.title }}
+                </a>
+
+                <div class="muted">
+                  {{ b.author }} ·
+                  {{ b.isbn or 'Chưa có ISBN' }}
+                </div>
+              </div>
+            </div>
+          </td>
+
+          <!-- CATEGORY -->
+          <td>
+            <span class="tag">
+              {{ b.category.name }}
+            </span>
+          </td>
+
+          <!-- PRICE -->
+          <td>
+            <b>{{ b.price | money }}</b>
+          </td>
+
+          <!-- STOCK -->
+          <td>
+            <span class="{{ 'low-stock' if b.quantity < 5 else 'stock' }}">
+              {{ b.quantity }} bản
+            </span>
+          </td>
+
+          <!-- ACTIONS -->
+          <td>
+            <div class="actions">
+
+              <!-- DETAIL -->
+              <a
+                class="icon-btn"
+                title="Chi tiết"
+                href="{{ url_for('book_detail', ident=b.id) }}"
+              >
+                ◉
+              </a>
+
+              <!-- EDIT -->
+              <button
+                type="button"
+                class="icon-btn"
+                title="Sửa"
+                data-edit-book
+                data-id="{{ b.id }}"
+                data-title="{{ b.title }}"
+                data-author="{{ b.author }}"
+                data-isbn="{{ b.isbn or '' }}"
+                data-price="{{ b.price }}"
+                data-quantity="{{ b.quantity }}"
+                data-image-url="{{ b.image_url or '' }}"
+                data-description="{{ b.description or '' }}"
+                data-category-id="{{ b.category_id }}"
+              >
+                ✎
+              </button>
+
+              <!-- DELETE -->
+              <form
+                action="{{ url_for('delete_book', ident=b.id) }}"
+                method="post"
+                onsubmit="return confirm('Xóa cuốn sách này?')"
+              >
+                <button
+                  type="submit"
+                  class="icon-btn danger"
+                  title="Xóa"
+                >
+                  ♲
+                </button>
+              </form>
+
+            </div>
+          </td>
+        </tr>
+
+        {% else %}
+        <tr>
+          <td colspan="5" class="empty">
+            Không có sách nào. Hãy thêm sách mới!
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ADD / EDIT BOOK MODAL -->
+<div class="modal-backdrop" id="book-modal">
+  <div class="modal wide">
+
+    <!-- MODAL HEADER -->
+    <div class="modal-head">
+      <h3 id="book-modal-title">
+        Thêm sách mới
+      </h3>
+
+      <button
+        type="button"
+        class="icon-btn"
+        onclick="closeModal('book-modal')"
+      >
+        ✕
+      </button>
+    </div>
+
+    <!-- BOOK FORM -->
+    <form
+      action="{{ url_for('save_book') }}"
+      method="post"
+    >
+      <input
+        type="hidden"
+        name="id"
+        id="book-id"
+      >
+
+      <div class="form-grid">
+
+        <!-- TITLE -->
+        <label>
+          Tên sách <em>*</em>
+          <input
+            type="text"
+            name="title"
+            id="book-title"
+            required
+            maxlength="255"
+          >
+        </label>
+
+        <!-- AUTHOR -->
+        <label>
+          Tác giả <em>*</em>
+          <input
+            type="text"
+            name="author"
+            id="book-author"
+            required
+            maxlength="150"
+          >
+        </label>
+
+        <!-- CATEGORY -->
+        <label>
+          Danh mục <em>*</em>
+          <select
+            name="category_id"
+            id="book-category-id"
+            required
+          >
+            <option value="">
+              Chọn danh mục
+            </option>
+
+            {% for c in categories %}
+            <option value="{{ c.id }}">
+              {{ c.name }}
+            </option>
+            {% endfor %}
+          </select>
+        </label>
+
+        <!-- ISBN -->
+        <label>
+          ISBN
+          <input
+            type="text"
+            name="isbn"
+            id="book-isbn"
+            maxlength="20"
+          >
+        </label>
+
+        <!-- PRICE -->
+        <label>
+          Giá bán (VNĐ) <em>*</em>
+          <input
+            type="number"
+            name="price"
+            id="book-price"
+            min="0"
+            step="1000"
+            value="0"
+            required
+          >
+        </label>
+
+        <!-- QUANTITY -->
+        <label>
+          Số lượng <em>*</em>
+          <input
+            type="number"
+            name="quantity"
+            id="book-quantity"
+            min="0"
+            step="1"
+            value="0"
+            required
+          >
+        </label>
+
+        <!-- IMAGE -->
+        <label class="span-2">
+          URL ảnh bìa
+          <input
+            type="url"
+            name="image_url"
+            id="book-image-url"
+            placeholder="https://..."
+          >
+        </label>
+
+        <!-- DESCRIPTION -->
+        <label class="span-2">
+          Mô tả
+          <textarea
+            name="description"
+            id="book-description"
+            rows="3"
+          ></textarea>
+        </label>
+
+      </div>
+
+      <!-- MODAL FOOTER -->
+      <div class="modal-actions">
+        <button
+          type="button"
+          class="btn light"
+          onclick="closeModal('book-modal')"
+        >
+          Hủy
+        </button>
+
+        <button
+          type="submit"
+          class="btn primary"
+        >
+          Lưu sách
+        </button>
+      </div>
+
+    </form>
+  </div>
+</div>
+
+{% endblock %}

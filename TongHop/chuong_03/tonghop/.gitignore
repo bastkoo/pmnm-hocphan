@@ -1,0 +1,20 @@
+# Môi trường ảo Python (Virtual Environment)
+venv/
+.venv/
+env/
+ENV/
+
+# Thư mục cache và file biên dịch của Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Cấu hình IDE / Code Editor
+.vscode/
+.idea/
+
+# File tạm hệ thống
+.DS_Store
+Thumbs.db

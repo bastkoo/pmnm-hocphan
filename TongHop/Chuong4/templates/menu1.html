@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block title %}Danh Sách Thực Đơn - Cafe Sông Hương{% endblock %}
+
+{% block styles %}
+    <!-- Dùng super() để giữ lại CSS .het-hang ở base, đồng thời viết thêm CSS riêng cho menu nếu cần -->
+    {{ super() }}
+    <style>
+        .menu-header-bg {
+            background: linear-gradient(135deg, #0d6efd, #0dcaf0);
+            color: white;
+            border-radius: 10px;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            
+            <div class="card shadow-sm border-0 p-4 rounded-4">
+                <h2 class="h4 text-primary fw-bold mb-4">📋 Danh Sách Thực Đơn</h2>
+
+                <div class="table-responsive mb-4">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-primary">
+                            <tr>
+                                <th scope="col" style="width: 10%;">STT</th>
+                                <th scope="col" style="width: 40%;">Tên món</th>
+                                <th scope="col" style="width: 30%;">Giá (VNĐ)</th>
+                                <th scope="col" style="width: 20%;" class="text-center">Trạng thái</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in menu %}
+                                <tr class="{% if not item.available %}het-hang{% endif %}">
+                                    <th scope="row">{{ loop.index }}</th>
+                                    <td class="fw-semibold">{{ item.name | title }}</td>
+                                    <td class="text-danger fw-bold">{{ item.price | vnd }}</td>
+                                    <td class="text-center">
+                                        {% if item.available %}
+                                            <span class="badge bg-success">Có sẵn</span>
+                                        {% else %}
+                                            <span class="badge bg-secondary">Hết hàng</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% else %}
+                                <tr>
+                                    <td colspan="4" class="text-center text-muted py-3">Chưa có món nào trong thực đơn</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center bg-white p-3 rounded-3 border">
+                    <div class="text-secondary mb-0">
+                        💰 Giá trung bình: <span class="fw-bold text-dark">{{ menu | average_price | vnd }}</span>
+                    </div>
+                    <div>
+                        ✨ Đang có: <span class="badge bg-info text-dark fs-6">{{ menu | dang_co }} món</span>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

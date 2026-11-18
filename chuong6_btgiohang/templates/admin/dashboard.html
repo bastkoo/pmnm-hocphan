@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% from 'macros.html' import orders_table with context %}
+{% from 'icons.html' import icon %}
+{% block content %}
+<div class="dashboard-heading">
+  <div><p class="eyebrow">KHÔNG GIAN QUẢN TRỊ</p><h1>Tổng quan nhà sách</h1><p class="muted">Theo dõi kinh doanh, đơn hàng và kho sách của bạn.</p></div>
+  <span class="date-chip">{{ icon('calendar') }} {{ today.strftime('%d/%m/%Y') }}</span>
+</div>
+<div class="stats">
+  {% for name,label,detail in [('book','Đầu sách','Trong danh mục kinh doanh'),('clock','Chờ xác nhận','Đơn hàng cần xử lý'),('wallet','Doanh thu tháng ' ~ month,'Từ các đơn đã hoàn tất'),('alert','Sắp hết hàng','Sách có tồn kho ≤ 5 cuốn')] %}
+  <article class="panel stat-card stat-{{ loop.index }}">
+    <div class="stat-top"><span>{{ label }}</span><span class="stat-icon">{{ icon(name) }}</span></div>
+    <strong>{{ stats[loop.index0]|money if loop.index0 == 2 else stats[loop.index0] }}</strong>
+    <p>{{ detail }}</p>
+  </article>
+  {% endfor %}
+</div>
+<section class="panel revenue-panel" aria-labelledby="revenue-title">
+  <div class="section-heading chart-heading">
+    <div><p class="eyebrow">HIỆU QUẢ KINH DOANH</p><h2 id="revenue-title">{{ icon('trend') }} Doanh thu 7 ngày</h2><p class="muted">{{ revenue_days[0].date.strftime('%d/%m/%Y') }} – {{ revenue_days[-1].date.strftime('%d/%m/%Y') }} · Giờ Việt Nam (UTC+7)</p></div>
+    <span class="chart-legend"><i></i> Đơn hàng hoàn tất</span>
+  </div>
+  <div class="revenue-summary">
+    <div><span>Tổng doanh thu</span><strong>{{ revenue_total|money }}</strong></div>
+    <div><span>Đơn hoàn tất</span><strong>{{ revenue_count }} <small>đơn</small></strong></div>
+    <div><span>Cao nhất trong ngày</span><strong>{{ revenue_peak|money }}</strong></div>
+  </div>
+  <div class="revenue-chart" role="group" aria-label="Biểu đồ cột doanh thu từng ngày. Di chuột hoặc dùng phím Tab để xem chi tiết.">
+    <div class="chart-axis" aria-hidden="true">{% for fraction in [1, 0.75, 0.5, 0.25, 0] %}<span>{{ (chart_ceiling * fraction)|money }}</span>{% endfor %}</div>
+    <div class="chart-plot">
+      <div class="chart-grid" aria-hidden="true">{% for i in range(5) %}<span></span>{% endfor %}</div>
+      <div class="chart-columns">
+        {% for day in revenue_days %}
+        <div class="chart-column {{ 'is-today' if loop.last else '' }}">
+          <div class="bar-track"><button type="button" class="revenue-bar {{ 'zero-bar' if not day.amount else '' }}" style="--bar-height:{{ day.amount / chart_ceiling * 100 }}%" aria-label="{{ day.date.strftime('%d/%m/%Y') }}: {{ day.amount|money }}, {{ day.count }} đơn hoàn tất" aria-describedby="revenue-tip-{{ loop.index }}"><span class="bar-tooltip" role="tooltip" id="revenue-tip-{{ loop.index }}"><b>{{ day.date.strftime('%d/%m/%Y') }}</b><strong>{{ day.amount|money }}</strong><span>{{ day.count }} đơn hoàn tất</span></span></button></div>
+          <span class="bar-label">{{ day.date.strftime('%d/%m') }}<small>{{ 'Hôm nay' if loop.last else ['Thứ 2','Thứ 3','Thứ 4','Thứ 5','Thứ 6','Thứ 7','Chủ nhật'][day.date.weekday()] }}</small></span>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+  {% if not revenue_count %}<p class="chart-empty">{{ icon('trend') }} Chưa có đơn hàng hoàn tất trong 7 ngày qua.</p>{% endif %}
+  <div class="chart-footer"><p>Doanh thu ghi nhận theo ngày hoàn tất đơn, bao gồm phí giao hàng.</p><details><summary>Xem số liệu chi tiết</summary><div class="table-responsive"><table class="table revenue-data"><caption class="visually-hidden">Doanh thu từng ngày trong 7 ngày gần nhất</caption><thead><tr><th>Ngày</th><th>Đơn hoàn tất</th><th>Doanh thu</th></tr></thead><tbody>{% for day in revenue_days %}<tr><td>{{ day.date.strftime('%d/%m/%Y') }}</td><td>{{ day.count }}</td><td>{{ day.amount|money }}</td></tr>{% endfor %}</tbody></table></div></details></div>
+</section>
+<div class="dashboard-bottom">
+  <section class="panel recent-orders"><div class="section-heading"><h2>{{ icon('receipt') }} Đơn hàng mới nhất</h2><a class="text-link" href="{{ url_for('admin_orders') }}">Xem tất cả {{ icon('arrow-right') }}</a></div>{{ orders_table(orders) }}</section>
+  <section class="panel stock-panel"><div class="section-heading"><h2>{{ icon('alert') }} Cần nhập thêm</h2><span class="subtle-badge">{{ low_books|length }} sách</span></div><p class="muted small">Ưu tiên bổ sung những đầu sách sắp hết.</p>
+    {% for book in low_books %}<a class="stock-item" href="{{ url_for('book_edit',book_id=book.id) }}"><span class="stock-book-icon">{{ icon('book') }}</span><span class="stock-title">{{ book.title }}<small>{{ 'Hết hàng' if book.stock == 0 else 'Còn ' ~ book.stock ~ ' cuốn' }}</small></span><span class="stock-count {{ 'empty-stock' if book.stock == 0 else '' }}">{{ book.stock }}</span></a>{% else %}<div class="stock-ok">{{ icon('check') }} Kho sách đang đầy đủ.</div>{% endfor %}
+    <a class="text-link stock-link" href="{{ url_for('admin_books',stock='low') }}">Quản lý tồn kho {{ icon('arrow-right') }}</a>
+  </section>
+</div>
+{% endblock %}

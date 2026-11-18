@@ -1,0 +1,29 @@
+<style>
+  html { --course-nav-height: 66px; }
+  body { padding-top: var(--course-nav-height) !important; }
+  #course-nav { position: fixed; inset: 0 0 auto; z-index: 10000; height: var(--course-nav-height); box-sizing: border-box; display: flex; align-items: center; gap: 22px; padding: 0 24px; background: #14233d; color: #fff; border-bottom: 1px solid #34425b; font: 14px/1.4 system-ui, sans-serif; box-shadow: 0 3px 12px #14233d22; }
+  #course-nav a { text-decoration: none; color: #d9e4f5; white-space: nowrap; }
+  #course-nav .course-brand { font-weight: 750; color: white; letter-spacing: .3px; }
+  #course-nav .course-links { display: flex; align-items: center; gap: 6px; overflow-x: auto; min-width: 0; height: 100%; }
+  #course-nav .course-links a { padding: 10px 13px; border-radius: 8px; }
+  #course-nav .course-links a:hover, #course-nav a[aria-current="page"] { background: #305bc2; color: white; }
+  #course-nav a:focus-visible { outline: 2px solid #a8c7ff; outline-offset: 2px; }
+  .course-simple { padding: 24px; font-family: system-ui, sans-serif; }
+  body .navbar.fixed-top { top: var(--course-nav-height); }
+  body:has(.navbar.fixed-top) { padding-top: calc(var(--course-nav-height) + 85px) !important; }
+  body .sidebar { top: var(--course-nav-height); height: calc(100vh - var(--course-nav-height)); }
+  @media (max-width: 760px) {
+    html { --course-nav-height: 104px; }
+    #course-nav { flex-direction: column; align-items: stretch; gap: 5px; padding: 10px 12px 0; }
+    #course-nav .course-links { flex: 1; }
+  }
+</style>
+<nav id="course-nav" aria-label="Điều hướng các chương">
+  <a class="course-brand" href="/">PMNM · TỔNG HỢP</a>
+  <div class="course-links">
+    <a href="/" {% if active_section == '/' %}aria-current="page"{% endif %}>Trang chủ</a>
+    {% for section in sections %}
+    <a href="{{ section.prefix }}/" {% if active_section == section.prefix %}aria-current="page"{% endif %}>{{ section.label }}</a>
+    {% endfor %}
+  </div>
+</nav>

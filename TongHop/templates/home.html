@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tổng hợp bài tập PMNM</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #f3f6fc; color: #192b49; font: 16px/1.6 system-ui, sans-serif; }
+    main { max-width: 1120px; margin: 0 auto; padding: 48px 24px; }
+    .eyebrow { color: #305bc2; font-size: 13px; font-weight: 750; letter-spacing: 2px; }
+    h1 { margin: 8px 0; font-size: clamp(28px, 4vw, 42px); line-height: 1.2; }
+    .intro { color: #60718b; margin-bottom: 32px; }
+    .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(265px, 1fr)); gap: 20px; }
+    .card { display: flex; flex-direction: column; padding: 26px; background: white; border: 1px solid #e0e7f2; border-radius: 16px; box-shadow: 0 6px 20px #192b4908; }
+    .number { color: #305bc2; font-weight: 750; }
+    .card h2 { font-size: 21px; margin: 12px 0 6px; }
+    .card p { color: #60718b; margin: 0 0 22px; flex: 1; }
+    .card a { color: #305bc2; font-weight: 650; text-decoration: none; margin-top: 8px; }
+    .card a:hover { text-decoration: underline; }
+    footer { color: #60718b; margin-top: 32px; font-size: 14px; }
+  </style>
+</head>
+<body>
+  {% include 'shared_navbar.html' %}
+  <main>
+    <div class="eyebrow">PHÁT TRIỂN PHẦN MỀM NGUỒN MỞ</div>
+    <h1>Không gian bài tập Flask</h1>
+    <p class="intro">Chọn một chương để thực hành. Dùng thanh điều hướng phía trên để chuyển bài bất kỳ lúc nào.</p>
+    <div class="cards">
+      {% for section in sections %}
+      <article class="card">
+        <span class="number">{{ '%02d' | format(loop.index) }}</span>
+        <h2>{{ section.label }}</h2>
+        <p>{{ section.description }}</p>
+        <a href="{{ section.prefix }}/">Mở bài tập →</a>
+        {% if section.prefix == '/chuong3' %}<a href="/chuong3/thu-vien/">Bài quản lý thư viện →</a>{% endif %}
+      </article>
+      {% endfor %}
+    </div>
+    <footer>Chương 3 · Chương 4 · Chương 5 · Chương 6 · Bài kiểm tra</footer>
+  </main>
+</body>
+</html>
